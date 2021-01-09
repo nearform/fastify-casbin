@@ -22,25 +22,25 @@ server.register(fastifyCasbin)
 
 // string adapter
 server.register(fastifyCasbin, {
-  modelPath: 'some file',
+  model: 'some file',
   adapter: 'some adapter',
 })
 
 const model: Model = {} as Model
 server.register(fastifyCasbin, {
-  enforcerParam: model,
-  adapter: 'some adapter',
+  model: model,
+  adapter: new FileAdapter('some file'),
 })
 
 // typed adapter
 server.register(fastifyCasbin, {
-  modelPath: 'some file',
+  model: 'some file',
   adapter: new FileAdapter('some file'),
 })
 
 // watcher
 server.register(fastifyCasbin, {
-  modelPath: 'some file',
+  model: 'some file',
   adapter: 'some adapter',
   watcher: new TestWatcher(),
 })

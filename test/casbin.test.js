@@ -8,6 +8,7 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 const plugin = require('../')
+const { Model, FileAdapter } = require('casbin')
 
 const modelPath = path.join(__dirname, 'fixtures', 'basic_model.conf')
 const policyPath = path.join(__dirname, 'fixtures', 'basic_policy.csv')
@@ -18,8 +19,29 @@ test('casbin should exist', t => {
   const fastify = Fastify()
 
   fastify.register(plugin, {
-    modelPath,
+    model: modelPath,
     adapter: policyPath
+  })
+
+  fastify.ready(err => {
+    t.error(err)
+    t.ok(fastify.casbin)
+
+    fastify.close()
+  })
+})
+
+test('preloaded model and adapter should be accepted', t => {
+  t.plan(2)
+
+  const fastify = Fastify()
+  const preloadedModel = new Model()
+  preloadedModel.loadModel(modelPath)
+  const preloadedAdapter = new FileAdapter(policyPath)
+
+  fastify.register(plugin, {
+    model: preloadedModel,
+    adapter: preloadedAdapter
   })
 
   fastify.ready(err => {
@@ -36,7 +58,7 @@ test('casbinJsGetPermissionForUser should exist', t => {
   const fastify = Fastify()
 
   fastify.register(plugin, {
-    modelPath,
+    model: modelPath,
     adapter: policyPath
   })
 
@@ -66,7 +88,7 @@ test('calls loadPolicy on enforcer', t => {
   })
 
   fastify.register(plugin, {
-    modelPath,
+    model: modelPath,
     adapter: policyPath
   })
 
@@ -99,7 +121,7 @@ test('calls casbinJsGetPermissionForUser with enforcer', t => {
   })
 
   fastify.register(plugin, {
-    modelPath,
+    model: modelPath,
     adapter: policyPath
   })
 
@@ -136,7 +158,7 @@ test('sets watcher on enforcer when provided', t => {
   })
 
   fastify.register(plugin, {
-    modelPath,
+    model: modelPath,
     adapter: policyPath,
     watcher
   })
@@ -177,7 +199,7 @@ test('closes adapter and watcher', t => {
   })
 
   fastify.register(plugin, {
-    modelPath,
+    model: modelPath,
     adapter,
     watcher
   })

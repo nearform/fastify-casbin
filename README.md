@@ -60,7 +60,7 @@ const pgOptions = {
 }
 
 fastify.register(require('fastify-casbin'), {
-  modelPath: 'basic_model.conf', // the model configuration
+  model: 'basic_model.conf', // the model configuration
   adapter: await newAdapter(pgOptions), // the adapter
   watcher: await newWatcher(pgOptions) // the watcher
 })
@@ -83,16 +83,21 @@ fastify.get('/protected', async () => {
 
 ```typescript
 import fastify from 'fastify'
-import type { Model } from 'casbin'
+import { join } from 'path'
+import { Model, FileAdapter } from 'casbin'
+
+const modelPath = join(__dirname, 'auth', 'basic_model.conf')
+const policyPath = join(__dirname, 'auth', 'basic_policy.csv')
 
 const app = fastify()
-const model: Model = {
-  // model definition
-}
 
-fastify.register(require('fastify-casbin'), {
-  enforcerParam: model, // the model
-  adapter: 'basic_policy.csv' // the adapter
+const preloadedModel = new Model()
+preloadedModel.loadModel(modelPath)
+const preloadedAdapter = new FileAdapter(policyPath)
+
+fastify.register(plugin, {
+  model: preloadedModel,
+  adapter: preloadedAdapter
 })
 
 fastify.get('/protected', async () => {

@@ -1,7 +1,7 @@
 /// <reference types="node" />
 
 import { FastifyPluginAsync } from 'fastify'
-import { Adapter, Enforcer, Watcher } from 'casbin'
+import { Adapter, Enforcer, Watcher, Model } from 'casbin'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -12,8 +12,7 @@ declare module 'fastify' {
 }
 
 export interface FastifyCasbinOptions {
-  modelPath?: string
-  enforcerParam?: any // could be anything that newEnforcer() supports as the first argument. Common cases include `string` for modelPath and `Model` for programmatically instantiated model.
+  model: string | Model
   adapter: string | Adapter
   watcher?: Watcher
 }
