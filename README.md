@@ -79,6 +79,31 @@ fastify.get('/protected', async () => {
 })
 ```
 
+### Using programmatically assembled model
+
+```typescript
+import fastify from 'fastify'
+import type { Model } from 'casbin'
+
+const app = fastify()
+const model: Model = {
+  // model definition
+}
+
+fastify.register(require('fastify-casbin'), {
+  enforcerParam: model, // the model
+  adapter: 'basic_policy.csv' // the adapter
+})
+
+fastify.get('/protected', async () => {
+  if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
+    throw new Error('Forbidden')
+  }
+
+  return `You're in!`
+})
+```
+
 ## License
 
 Licensed under [MIT License](./LICENSE)

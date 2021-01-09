@@ -3,8 +3,17 @@
 const fp = require('fastify-plugin')
 const { newEnforcer, casbinJsGetPermissionForUser } = require('casbin')
 
-async function fastifyCasbin (fastify, { modelPath, adapter, watcher }) {
-  const enforcer = await newEnforcer(modelPath, adapter)
+async function fastifyCasbin (fastify, { modelPath, enforcerParam, adapter, watcher }) {
+  if (enforcerParam && modelPath) {
+    throw new Error("Can't specify both 'modelPath' and 'enforcerParam'")
+  }
+  if (!enforcerParam && !modelPath) {
+    throw new Error("Have to specify either 'modelPath' or 'enforcerParam'")
+  }
+
+  const enforcerParams = enforcerParam ? [enforcerParam] : [modelPath]
+  enforcerParams.push(adapter)
+  const enforcer = await newEnforcer(...enforcerParams)
 
   if (watcher) {
     enforcer.setWatcher(watcher)
