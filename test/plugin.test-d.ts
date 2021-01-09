@@ -1,4 +1,4 @@
-import { Enforcer, FileAdapter, Watcher } from 'casbin'
+import { Enforcer, FileAdapter, Model, Watcher } from 'casbin'
 import fastify from 'fastify'
 import { expectAssignable, expectType } from 'tsd'
 
@@ -22,19 +22,25 @@ server.register(fastifyCasbin)
 
 // string adapter
 server.register(fastifyCasbin, {
-  modelPath: 'some file',
+  model: 'some file',
   adapter: 'some adapter',
+})
+
+const model: Model = {} as Model
+server.register(fastifyCasbin, {
+  model: model,
+  adapter: new FileAdapter('some file'),
 })
 
 // typed adapter
 server.register(fastifyCasbin, {
-  modelPath: 'some file',
+  model: 'some file',
   adapter: new FileAdapter('some file'),
 })
 
 // watcher
 server.register(fastifyCasbin, {
-  modelPath: 'some file',
+  model: 'some file',
   adapter: 'some adapter',
   watcher: new TestWatcher(),
 })

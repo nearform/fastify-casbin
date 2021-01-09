@@ -32,7 +32,7 @@ Using basic [model](https://github.com/casbin/casbin/blob/master/examples/basic_
 const fastify = require('fastify')()
 
 fastify.register(require('fastify-casbin'), {
-  modelPath: 'basic_model.conf', // the model configuration
+  model: 'basic_model.conf', // the model configuration
   adapter: 'basic_policy.csv' // the adapter
 })
 
@@ -60,7 +60,7 @@ const pgOptions = {
 }
 
 fastify.register(require('fastify-casbin'), {
-  modelPath: 'basic_model.conf', // the model configuration
+  model: 'basic_model.conf', // the model configuration
   adapter: await newAdapter(pgOptions), // the adapter
   watcher: await newWatcher(pgOptions) // the watcher
 })
@@ -68,6 +68,36 @@ fastify.register(require('fastify-casbin'), {
 // add some policies at application startup
 fastify.addHook('onReady', async function () {
   await fastify.casbin.addPolicy('alice', 'data1', 'read')
+})
+
+fastify.get('/protected', async () => {
+  if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
+    throw new Error('Forbidden')
+  }
+
+  return `You're in!`
+})
+```
+
+### Using programmatically assembled model
+
+```typescript
+import fastify from 'fastify'
+import { join } from 'path'
+import { Model, FileAdapter } from 'casbin'
+
+const modelPath = join(__dirname, 'auth', 'basic_model.conf')
+const policyPath = join(__dirname, 'auth', 'basic_policy.csv')
+
+const app = fastify()
+
+const preloadedModel = new Model()
+preloadedModel.loadModel(modelPath)
+const preloadedAdapter = new FileAdapter(policyPath)
+
+fastify.register(plugin, {
+  model: preloadedModel,
+  adapter: preloadedAdapter
 })
 
 fastify.get('/protected', async () => {

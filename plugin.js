@@ -3,8 +3,8 @@
 const fp = require('fastify-plugin')
 const { newEnforcer, casbinJsGetPermissionForUser } = require('casbin')
 
-async function fastifyCasbin (fastify, { modelPath, adapter, watcher }) {
-  const enforcer = await newEnforcer(modelPath, adapter)
+async function fastifyCasbin (fastify, { model, adapter, watcher }) {
+  const enforcer = await newEnforcer(model, adapter)
 
   if (watcher) {
     enforcer.setWatcher(watcher)
