@@ -52,6 +52,25 @@ test('preloaded model and adapter should be accepted', t => {
   })
 })
 
+test('adapter can be omitted for in-memory storage', t => {
+  t.plan(2)
+
+  const fastify = Fastify()
+  const preloadedModel = new Model()
+  preloadedModel.loadModel(modelPath)
+
+  fastify.register(plugin, {
+    model: preloadedModel
+  })
+
+  fastify.ready(err => {
+    t.error(err)
+    t.ok(fastify.casbin)
+
+    fastify.close()
+  })
+})
+
 test('casbinJsGetPermissionForUser should exist', t => {
   t.plan(2)
 
