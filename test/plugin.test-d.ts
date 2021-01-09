@@ -26,6 +26,11 @@ server.register(fastifyCasbin, {
   adapter: 'some adapter',
 })
 
+// in-memory adapter
+server.register(fastifyCasbin, {
+  model: 'some file'
+})
+
 const model: Model = {} as Model
 server.register(fastifyCasbin, {
   model: model,

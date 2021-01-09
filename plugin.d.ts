@@ -13,7 +13,7 @@ declare module 'fastify' {
 
 export interface FastifyCasbinOptions {
   model: string | Model
-  adapter: string | Adapter
+  adapter?: string | Adapter
   watcher?: Watcher
 }
 
