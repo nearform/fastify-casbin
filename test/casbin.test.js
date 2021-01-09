@@ -6,9 +6,9 @@ const test = tap.test
 const Fastify = require('fastify')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const { Model, FileAdapter } = require('casbin')
 
 const plugin = require('../')
-const { Model, FileAdapter } = require('casbin')
 
 const modelPath = path.join(__dirname, 'fixtures', 'basic_model.conf')
 const policyPath = path.join(__dirname, 'fixtures', 'basic_policy.csv')
