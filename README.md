@@ -32,7 +32,7 @@ Using basic [model](https://github.com/casbin/casbin/blob/master/examples/basic_
 const fastify = require('fastify')()
 
 fastify.register(require('fastify-casbin'), {
-  modelPath: 'basic_model.conf', // the model configuration
+  model: 'basic_model.conf', // the model configuration
   adapter: 'basic_policy.csv' // the adapter
 })
 
