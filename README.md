@@ -59,24 +59,26 @@ const pgOptions = {
   migrate: true
 }
 
-fastify.register(require('fastify-casbin'), {
-  model: 'basic_model.conf', // the model configuration
-  adapter: await newAdapter(pgOptions), // the adapter
-  watcher: await newWatcher(pgOptions) // the watcher
-})
+async () => {
+  fastify.register(require('fastify-casbin'), {
+    model: 'basic_model.conf', // the model configuration
+    adapter: await newAdapter(pgOptions), // the adapter
+    watcher: await newWatcher(pgOptions) // the watcher
+  })
 
-// add some policies at application startup
-fastify.addHook('onReady', async function () {
-  await fastify.casbin.addPolicy('alice', 'data1', 'read')
-})
+  // add some policies at application startup
+  fastify.addHook('onReady', async function () {
+    await fastify.casbin.addPolicy('alice', 'data1', 'read')
+  })
 
-fastify.get('/protected', async () => {
-  if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
-    throw new Error('Forbidden')
-  }
+  fastify.get('/protected', async () => {
+    if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
+      throw new Error('Forbidden')
+    }
 
-  return `You're in!`
-})
+    return `You're in!`
+  })
+}
 ```
 
 ### Using programmatically assembled model
