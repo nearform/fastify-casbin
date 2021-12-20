@@ -54,16 +54,28 @@ const fastify = require('fastify')()
 const { newAdapter } = require('casbin-pg-adapter').default
 const { newWatcher } = require('casbin-pg-watcher')
 
+
 const pgOptions = {
   connectionString: 'postgres://localhost',
   migrate: true
 }
 
-fastify.register(require('fastify-casbin'), {
-  model: 'basic_model.conf', // the model configuration
-  adapter: await newAdapter(pgOptions), // the adapter
-  watcher: await newWatcher(pgOptions) // the watcher
+const registerCasbin = async () => {
+  try {
+    await fastify.register(require('fastify-casbin'), {
+      model: 'basic_model.conf', // the model configuration
+      adapter: await newAdapter(pgOptions), // the adapter
+      watcher: await newWatcher(pgOptions) // the watcher
+    })
+  } catch (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
+}
+registerCasbin().then(() => {
+  // Run the server after async registration
 })
+
 
 // add some policies at application startup
 fastify.addHook('onReady', async function () {
@@ -85,6 +97,7 @@ fastify.get('/protected', async () => {
 import fastify from 'fastify'
 import { join } from 'path'
 import { Model, FileAdapter } from 'casbin'
+import plugin from 'fastify-casbin'
 
 const modelPath = join(__dirname, 'auth', 'basic_model.conf')
 const policyPath = join(__dirname, 'auth', 'basic_policy.csv')
@@ -95,13 +108,13 @@ const preloadedModel = new Model()
 preloadedModel.loadModel(modelPath)
 const preloadedAdapter = new FileAdapter(policyPath)
 
-fastify.register(plugin, {
+app.register(plugin, {
   model: preloadedModel,
   adapter: preloadedAdapter
 })
 
-fastify.get('/protected', async () => {
-  if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
+app.get('/protected', async () => {
+  if (!(await app.casbin.enforce('alice', 'data1', 'read'))) {
     throw new Error('Forbidden')
   }
 
