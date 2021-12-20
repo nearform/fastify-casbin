@@ -55,28 +55,30 @@ const { newAdapter } = require('casbin-pg-adapter').default
 const { newWatcher } = require('casbin-pg-watcher')
 
 const pgOptions = {
-  connectionString: 'postgres://localhost'
+  connectionString: 'postgres://localhost',
   migrate: true
 }
 
-fastify.register(require('fastify-casbin'), {
-  model: 'basic_model.conf', // the model configuration
-  adapter: await newAdapter(pgOptions), // the adapter
-  watcher: await newWatcher(pgOptions) // the watcher
-})
+async () => {
+  fastify.register(require('fastify-casbin'), {
+    model: 'basic_model.conf', // the model configuration
+    adapter: await newAdapter(pgOptions), // the adapter
+    watcher: await newWatcher(pgOptions) // the watcher
+  })
 
-// add some policies at application startup
-fastify.addHook('onReady', async function () {
-  await fastify.casbin.addPolicy('alice', 'data1', 'read')
-})
+  // add some policies at application startup
+  fastify.addHook('onReady', async function () {
+    await fastify.casbin.addPolicy('alice', 'data1', 'read')
+  })
 
-fastify.get('/protected', async () => {
-  if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
-    throw new Error('Forbidden')
-  }
+  fastify.get('/protected', async () => {
+    if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
+      throw new Error('Forbidden')
+    }
 
-  return `You're in!`
-})
+    return `You're in!`
+  })
+}
 ```
 
 ### Using programmatically assembled model
@@ -85,6 +87,7 @@ fastify.get('/protected', async () => {
 import fastify from 'fastify'
 import { join } from 'path'
 import { Model, FileAdapter } from 'casbin'
+import fastifyCasbin from 'fastify-casbin'
 
 const modelPath = join(__dirname, 'auth', 'basic_model.conf')
 const policyPath = join(__dirname, 'auth', 'basic_policy.csv')
@@ -95,13 +98,13 @@ const preloadedModel = new Model()
 preloadedModel.loadModel(modelPath)
 const preloadedAdapter = new FileAdapter(policyPath)
 
-fastify.register(plugin, {
+app.register(fastifyCasbin, {
   model: preloadedModel,
   adapter: preloadedAdapter
 })
 
-fastify.get('/protected', async () => {
-  if (!(await fastify.casbin.enforce('alice', 'data1', 'read'))) {
+app.get('/protected', async () => {
+  if (!(await app.casbin.enforce('alice', 'data1', 'read'))) {
     throw new Error('Forbidden')
   }
 
