@@ -59,15 +59,10 @@ const pgOptions = {
   migrate: true
 }
 
-const registerCasbin = async () => {
-  await fastify.register(require('fastify-casbin'), {
-    model: 'basic_model.conf', // the model configuration
-    adapter: await newAdapter(pgOptions), // the adapter
-    watcher: await newWatcher(pgOptions) // the watcher
-  })
-}
-registerCasbin().then(() => {
-  // Run the server after async registration
+fastify.register(require('fastify-casbin'), {
+  model: 'basic_model.conf', // the model configuration
+  adapter: await newAdapter(pgOptions), // the adapter
+  watcher: await newWatcher(pgOptions) // the watcher
 })
 
 // add some policies at application startup
