@@ -85,7 +85,7 @@ fastify.get('/protected', async () => {
 import fastify from 'fastify'
 import { join } from 'path'
 import { Model, FileAdapter } from 'casbin'
-import plugin from 'fastify-casbin'
+import fastifyCasbin from 'fastify-casbin'
 
 const modelPath = join(__dirname, 'auth', 'basic_model.conf')
 const policyPath = join(__dirname, 'auth', 'basic_policy.csv')
@@ -96,7 +96,7 @@ const preloadedModel = new Model()
 preloadedModel.loadModel(modelPath)
 const preloadedAdapter = new FileAdapter(policyPath)
 
-app.register(plugin, {
+app.register(fastifyCasbin, {
   model: preloadedModel,
   adapter: preloadedAdapter
 })
