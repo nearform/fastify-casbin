@@ -60,16 +60,11 @@ const pgOptions = {
 }
 
 const registerCasbin = async () => {
-  try {
-    await fastify.register(require('fastify-casbin'), {
-      model: 'basic_model.conf', // the model configuration
-      adapter: await newAdapter(pgOptions), // the adapter
-      watcher: await newWatcher(pgOptions) // the watcher
-    })
-  } catch (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
+  await fastify.register(require('fastify-casbin'), {
+    model: 'basic_model.conf', // the model configuration
+    adapter: await newAdapter(pgOptions), // the adapter
+    watcher: await newWatcher(pgOptions) // the watcher
+  })
 }
 registerCasbin().then(() => {
   // Run the server after async registration
