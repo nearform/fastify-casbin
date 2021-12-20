@@ -70,7 +70,6 @@ registerCasbin().then(() => {
   // Run the server after async registration
 })
 
-
 // add some policies at application startup
 fastify.addHook('onReady', async function () {
   await fastify.casbin.addPolicy('alice', 'data1', 'read')
