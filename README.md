@@ -55,7 +55,7 @@ const { newAdapter } = require('casbin-pg-adapter').default
 const { newWatcher } = require('casbin-pg-watcher')
 
 const pgOptions = {
-  connectionString: 'postgres://localhost'
+  connectionString: 'postgres://localhost',
   migrate: true
 }
 
