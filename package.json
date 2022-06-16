@@ -39,7 +39,7 @@
     "casbin": ">=5.1.6"
   },
   "devDependencies": {
-    "@types/node": "^17.0.0",
+    "@types/node": "^18.0.0",
     "casbin": "^5.1.6",
     "fastify": "^4.0.2",
     "pre-commit": "^1.2.2",
