@@ -1,6 +1,6 @@
 {
   "name": "fastify-casbin",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Plugin for fastify to add generic support for Casbin",
   "main": "plugin.js",
   "types": "plugin.d.ts",
