@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/nearform/fastify-casbin#readme",
   "dependencies": {
-    "fastify-plugin": "^4.0.0"
+    "fastify-plugin": "^5.0.1"
   },
   "peerDependencies": {
     "casbin": ">=5.1.6"
