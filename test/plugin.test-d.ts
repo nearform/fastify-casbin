@@ -17,9 +17,6 @@ interface CasbinJsGetPermissionsForUser {
 
 const server = fastify()
 
-// no options
-server.register(fastifyCasbin)
-
 // string adapter
 server.register(fastifyCasbin, {
   model: 'some file',
