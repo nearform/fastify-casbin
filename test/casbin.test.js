@@ -1,19 +1,21 @@
 'use strict'
 
 const path = require('path')
-const tap = require('tap')
-const test = tap.test
+const { test } = require('node:test')
 const Fastify = require('fastify')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const { Model, FileAdapter } = require('casbin')
+const fs = require('fs')
+const { Model, FileAdapter, setDefaultFileSystem } = require('casbin')
 
 const plugin = require('../')
 
 const modelPath = path.join(__dirname, 'fixtures', 'basic_model.conf')
 const policyPath = path.join(__dirname, 'fixtures', 'basic_policy.csv')
 
-test('casbin should exist', t => {
+setDefaultFileSystem(fs)
+
+test('casbin should exist', (t, done) => {
   t.plan(2)
 
   const fastify = Fastify()
@@ -24,14 +26,15 @@ test('casbin should exist', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
-    t.ok(fastify.casbin)
+    t.assert.ok(!err)
+    t.assert.ok(fastify.casbin)
 
     fastify.close()
+    done()
   })
 })
 
-test('preloaded model and adapter should be accepted', t => {
+test('preloaded model and adapter should be accepted', (t, done) => {
   t.plan(2)
 
   const fastify = Fastify()
@@ -45,14 +48,15 @@ test('preloaded model and adapter should be accepted', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
-    t.ok(fastify.casbin)
+    t.assert.ok(!err)
+    t.assert.ok(fastify.casbin)
 
     fastify.close()
+    done()
   })
 })
 
-test('adapter can be omitted for in-memory storage', t => {
+test('adapter can be omitted for in-memory storage', (t, done) => {
   t.plan(2)
 
   const fastify = Fastify()
@@ -64,14 +68,15 @@ test('adapter can be omitted for in-memory storage', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
-    t.ok(fastify.casbin)
+    t.assert.ok(!err)
+    t.assert.ok(fastify.casbin)
 
     fastify.close()
+    done()
   })
 })
 
-test('casbinJsGetPermissionForUser should exist', t => {
+test('casbinJsGetPermissionForUser should exist', (t, done) => {
   t.plan(2)
 
   const fastify = Fastify()
@@ -82,14 +87,15 @@ test('casbinJsGetPermissionForUser should exist', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
-    t.ok(fastify.casbin.casbinJsGetPermissionForUser)
+    t.assert.ok(!err)
+    t.assert.ok(fastify.casbin.casbinJsGetPermissionForUser)
 
     fastify.close()
+    done()
   })
 })
 
-test('calls loadPolicy on enforcer', t => {
+test('calls loadPolicy on enforcer', (t, done) => {
   t.plan(2)
 
   const fastify = Fastify()
@@ -112,14 +118,15 @@ test('calls loadPolicy on enforcer', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
-    t.ok(enforcer.loadPolicy.called)
+    t.assert.ok(!err)
+    t.assert.ok(enforcer.loadPolicy.called)
 
     fastify.close()
+    done()
   })
 })
 
-test('calls casbinJsGetPermissionForUser with enforcer', t => {
+test('calls casbinJsGetPermissionForUser with enforcer', (t, done) => {
   t.plan(2)
 
   const fastify = Fastify()
@@ -145,17 +152,18 @@ test('calls casbinJsGetPermissionForUser with enforcer', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
+    t.assert.ok(!err)
 
     fastify.casbin.casbinJsGetPermissionForUser('user')
 
-    t.ok(casbinJsGetPermissionForUser.calledWith(enforcer, 'user'))
+    t.assert.ok(casbinJsGetPermissionForUser.calledWith(enforcer, 'user'))
 
     fastify.close()
+    done()
   })
 })
 
-test('sets watcher on enforcer when provided', t => {
+test('sets watcher on enforcer when provided', (t, done) => {
   t.plan(2)
 
   const fastify = Fastify()
@@ -183,14 +191,15 @@ test('sets watcher on enforcer when provided', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
-    t.ok(enforcer.setWatcher.calledWith(watcher))
+    t.assert.ok(!err)
+    t.assert.ok(enforcer.setWatcher.calledWith(watcher))
 
     fastify.close()
+    done()
   })
 })
 
-test('closes adapter and watcher', t => {
+test('closes adapter and watcher', (t, done) => {
   t.plan(3)
 
   const fastify = Fastify()
@@ -224,11 +233,13 @@ test('closes adapter and watcher', t => {
   })
 
   fastify.ready(err => {
-    t.error(err)
+    t.assert.ok(!err)
 
     fastify.close(() => {
-      t.ok(adapter.close.called)
-      t.ok(watcher.close.called)
+      t.assert.ok(adapter.close.called)
+      t.assert.ok(watcher.close.called)
+
+      done()
     })
   })
 })

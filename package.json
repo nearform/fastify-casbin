@@ -5,8 +5,7 @@
   "main": "plugin.js",
   "types": "plugin.d.ts",
   "scripts": {
-    "test": "tap test/*.test.js && npm run typescript",
-    "test:ci": "tap --coverage-report=lcov test/*.test.js && npm run typescript",
+    "test": "node --test && npm run typescript",
     "lint": "standard | snazzy",
     "lint:fix": "standard --fix | snazzy",
     "typescript": "tsd"
@@ -47,7 +46,6 @@
     "sinon": "^19.0.2",
     "snazzy": "^9.0.0",
     "standard": "^17.1.2",
-    "tap": "^16.0.0",
     "tsd": "^0.31.2",
     "typescript": "^5.7.2"
   }
