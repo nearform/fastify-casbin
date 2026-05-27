@@ -1,9 +1,7 @@
-'use strict'
+import fp from 'fastify-plugin'
+import { newEnforcer, casbinJsGetPermissionForUser } from 'casbin'
 
-const fp = require('fastify-plugin')
-const { newEnforcer, casbinJsGetPermissionForUser } = require('casbin')
-
-async function fastifyCasbin (fastify, { model, adapter, watcher }) {
+export async function fastifyCasbin (fastify, { model, adapter, watcher }) {
   const enforcerParams = adapter ? [model, adapter] : [model]
   const enforcer = await newEnforcer(...enforcerParams)
 
@@ -29,6 +27,7 @@ async function fastifyCasbin (fastify, { model, adapter, watcher }) {
   fastify.decorate('casbin', enforcer)
 }
 
-module.exports = fp(fastifyCasbin, {
-  name: 'fastify-casbin'
+export default fp(fastifyCasbin, {
+  name: 'fastify-casbin',
+  fastify: '5.x'
 })

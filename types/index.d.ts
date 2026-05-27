@@ -19,4 +19,5 @@ export interface FastifyCasbinOptions {
 
 declare const fastifyCasbin: FastifyPluginAsync<FastifyCasbinOptions>
 
+export { fastifyCasbin }
 export default fastifyCasbin
