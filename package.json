@@ -5,7 +5,7 @@
   "main": "plugin.js",
   "types": "plugin.d.ts",
   "scripts": {
-    "test": "node --test && npm run typescript",
+    "test": "node --test test/*.test.js && npm run typescript",
     "lint": "standard | snazzy",
     "lint:fix": "standard --fix | snazzy",
     "typescript": "tsd"
