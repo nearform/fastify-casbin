@@ -47,6 +47,6 @@
     "snazzy": "^9.0.0",
     "standard": "^17.1.2",
     "tsd": "^0.32.0",
-    "typescript": "^5.7.2"
+    "typescript": "^7.0.2"
   }
 }
